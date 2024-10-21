@@ -48,18 +48,6 @@ void FSM::run()
     {
         _currentState->run();
         _nextStateName = _currentState->checkTransition();
-        if (count > 2000 && count < 4000)
-        {
-            _nextStateName = FSMStateName::PDSTAND;
-        }
-        else if (count > 4000 && count < 5000) 
-        {
-            _nextStateName = FSMStateName::QPSTAND;
-        }
-        else if (count > 5000 && count < 6000) 
-        {
-            _nextStateName = FSMStateName::MANIPULATION;
-        }
         if (_nextStateName != _currentState->_stateName)
         {
             _mode = FSMMode::CHANGE;

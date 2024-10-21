@@ -1,0 +1,43 @@
+session_name: MultiRobotSim
+windows:
+  - window_name: World
+    layout: tiled
+    panes:
+      - shell_command:
+        - roslaunch quadruped_sim world_only.launch
+    shell_command_before:
+      - source ~/Projects/manipulation_ws/devel/setup.bash 
+
+  - window_name: Robot1
+    layout: tiled
+    panes:
+      - shell_command:
+        - sleep 2
+        - roslaunch quadruped_sim spawn_robot.launch robot_type:=$robot_type ns:=$ns x_pos:=$x_pos y_pos:=$y_pos yaw_angle:=$yaw_angle 
+      - shell_command:
+        - sleep 6
+        - rosrun quadruped_sim quad_sim_control $robot_type __ns:=$ns
+    shell_command_before:
+      - source ~/Projects/manipulation_ws/devel/setup.bash 
+      - export ns=robot_1
+      - export robot_type=a1
+      - export x_pos=0.0
+      - export y_pos=-0.73
+      - export yaw_angle=0.0
+
+  - window_name: Robot2
+    layout: tiled
+    panes:
+      - shell_command:
+        - sleep 3
+        - roslaunch quadruped_sim spawn_robot.launch robot_type:=$robot_type ns:=$ns x_pos:=$x_pos y_pos:=$y_pos yaw_angle:=$yaw_angle 
+      - shell_command:
+        - sleep 6
+        - rosrun quadruped_sim quad_sim_control $robot_type __ns:=$ns
+    shell_command_before:
+      - source ~/Projects/manipulation_ws/devel/setup.bash 
+      - export ns=robot_2
+      - export robot_type=aliengo
+      - export x_pos=0.0
+      - export y_pos=0.0
+      - export yaw_angle=0.0

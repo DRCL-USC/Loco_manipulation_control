@@ -1,5 +1,6 @@
 #include "IOROS.h"
 #include <interface/KeyBoard.h>
+#include <RosCmdHandle.h>
 #include <iostream>
 #include <unistd.h>
 #include <csignal>
@@ -22,7 +23,7 @@ IOROS::IOROS(Quadruped quad) : IOInterface(), _quad(quad)
 
     signal(SIGINT, RosShutDown);
 
-    cmdPanel = new KeyBoard();
+    cmdPanel = new RosCmdHandle();
     _nm.param<std::string>("tf_prefix", tf_prefix, "");
 }
 
