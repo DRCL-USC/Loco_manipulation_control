@@ -37,6 +37,7 @@ link_directories(
 
 set(SOURCES
     src/IOSDK.cpp
+    src/ManipulationUDP.cpp
     src/WirelessHandle.cpp
     src/quad_hardware_control.cpp
 )

@@ -11,6 +11,7 @@
 #include <FSM/FSM.h>
 
 #include "IOSDK.h"
+#include "ManipulationUDP.h"
 
 bool running = true;
 
@@ -38,14 +39,19 @@ int main()
     double dt = 0.001;
     int cmd_panel_id = 1; // Wireless=1, keyboard=2
     IOInterface *ioInter;
+    ManipulationUDP *manipulationIO;
+
 #ifdef A1_ROBOT
-    ioInter = new IOSDK(UNITREE_LEGGED_SDK::LeggedType::A1, cmd_panel_id, 8178);
+    ioInter = new IOSDK(UNITREE_LEGGED_SDK::LeggedType::A1, cmd_panel_id);
+    manipulationIO = new ManipulationUDP(8178);
     Quadruped quad("a1");
 #elif ALIENGO
-    ioInter = new IOSDK(UNITREE_LEGGED_SDK::LeggedType::Aliengo, cmd_panel_id, 8188);
+    ioInter = new IOSDK(UNITREE_LEGGED_SDK::LeggedType::Aliengo, cmd_panel_id);
+    manipulationIO = new ManipulationUDP(8188);
     Quadruped quad("aliengo");
 #elif GO1
-    ioInter = new IOSDK(UNITREE_LEGGED_SDK::LeggedType::Go1, cmd_panel_id, 8198);
+    ioInter = new IOSDK(UNITREE_LEGGED_SDK::LeggedType::Go1, cmd_panel_id);
+    manipulationIO = new ManipulationUDP(8198);
     Quadruped quad("go1");
 #endif
 
@@ -71,6 +77,7 @@ int main()
     _controlData->_interface = ioInter;
     _controlData->_lowCmd = lowCmd;
     _controlData->_lowState = lowState;
+    _controlData->_manipulationIO = manipulationIO;
 
     FSM *_FSMController = new FSM(_controlData);
 
