@@ -7,6 +7,7 @@
 #include <messages/LowLevelCmd.h>
 #include <messages/LowlevelState.h>
 #include <interface/IOInterface.h>
+#include <interface/ManipulationIO.h>
 #include <common/StateEstimatorContainer.h>
 
 struct ControlFSMData {
@@ -18,6 +19,7 @@ struct ControlFSMData {
   IOInterface *_interface;
   LowlevelCmd *_lowCmd;
   LowlevelState *_lowState;
+  ManipulationIO *_manipulationIO;
 
   void sendRecv(){
     _interface->sendRecv(_lowCmd, _lowState);

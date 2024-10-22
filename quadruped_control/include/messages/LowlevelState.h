@@ -33,6 +33,10 @@ struct UserValue{
         {
             foothold[i] = 0;
         }
+        for(int i = 0; i < 3; i++)
+        {
+            manipulation_force[i] = 0;
+        }
     }
 };
 

@@ -11,6 +11,7 @@
 #include <FSM/FSM.h>
 
 #include "IOROS.h"
+#include "ManipulationRos.h"
 
 bool running = true;
 
@@ -48,6 +49,10 @@ int main(int argc, char **argv)
     
     IOInterface *ioInter;
     ioInter = new IOROS(quad);
+
+    ManipulationIO *manipulationIO;
+    manipulationIO = new ManipulationRos(quad);
+
     ros::Rate rate(1000);
 
     LegController *legController = new LegController(quad);
@@ -78,6 +83,7 @@ int main(int argc, char **argv)
     _controlData->_interface = ioInter;
     _controlData->_lowCmd = cmd;
     _controlData->_lowState = state;
+    _controlData->_manipulationIO = manipulationIO;
 
     FSM *_FSMController = new FSM(_controlData);
 

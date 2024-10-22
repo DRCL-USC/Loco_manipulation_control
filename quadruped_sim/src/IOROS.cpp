@@ -39,29 +39,6 @@ void IOROS::sendRecv(const LowlevelCmd *cmd, LowlevelState *state)
 
     state->userCmd = cmdPanel->getUserCmd();
     state->userValue = cmdPanel->getUserValue();
-
-    if (planner_running)
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            state->userValue.manipulation_force[i] = Highcmd.manipulation_force(i);
-        }
-        state->userValue.vx = Highcmd.velocity_cmd[0];
-        state->userValue.vy = Highcmd.velocity_cmd[1];
-        state->userValue.turn_rate = Highcmd.omega_cmd[2];
-    }
-    else
-    {
-        for (int i = 0; i < 2; i++)
-        {
-            state->userValue.manipulation_force[i] = 0;
-        }
-        state->userValue.vx = 0;
-        state->userValue.vy = 0;
-        state->userValue.turn_rate = 0;
-
-        ROS_INFO_THROTTLE(1, "Waiting for new Target");
-    }
 }
 
 void IOROS::sendCmd(const LowlevelCmd *lowCmd)
@@ -182,13 +159,6 @@ void IOROS::initRecv()
     _foot_force_sub[1] = _nm.subscribe("visual/FL_foot_contact/the_force", 1, &IOROS::FLfootCallback, this);
     _foot_force_sub[2] = _nm.subscribe("visual/RR_foot_contact/the_force", 1, &IOROS::RRfootCallback, this);
     _foot_force_sub[3] = _nm.subscribe("visual/RL_foot_contact/the_force", 1, &IOROS::RLfootCallback, this);
-
-    _manipulation_force_sub = _nm.subscribe("wrench", 1, &IOROS::ManiForceCallback, this);
-    _object_sub[0] = _nm.subscribe("cmd_vel", 1, &IOROS::cmdvelCallback, this);
-    _object_sub[1] = _nm.subscribe("contactPoint", 1, &IOROS::poseCallback, this);
-
-    // create a ROS timer
-    timer = _nm.createTimer(ros::Duration(0.5), &IOROS::timerCallback, this);
 }
 
 void IOROS::StateCallback(const gazebo_msgs::ModelStates &msg)
@@ -219,7 +189,6 @@ void IOROS::imuCallback(const sensor_msgs::Imu &msg)
     _lowState.imu.quaternion[3] = msg.orientation.z;
 
     Eigen::Quaterniond quat(msg.orientation.w, msg.orientation.x, msg.orientation.y, msg.orientation.z);
-    rotmat = quat.toRotationMatrix();
 
     _lowState.imu.gyroscope[0] = msg.angular_velocity.x;
     _lowState.imu.gyroscope[1] = msg.angular_velocity.y;
@@ -344,45 +313,4 @@ void IOROS::RRfootCallback(const geometry_msgs::WrenchStamped &msg)
 void IOROS::RLfootCallback(const geometry_msgs::WrenchStamped &msg)
 {
     _lowState.footForce[3] = msg.wrench.force.z;
-}
-
-void IOROS::ManiForceCallback(const geometry_msgs::Wrench &msg)
-{
-    Eigen::Vector3d force_body = (Eigen::Vector3d() << msg.force.x, msg.force.y, msg.force.z).finished();
-    Highcmd.manipulation_force = rotmat * force_body;
-    msg_received = true;
-    // ROS_INFO("I heard: x =%f, y=%f, z=%f", Highcmd.manipulation_force[0], Highcmd.manipulation_force[1], Highcmd.manipulation_force[2]);
-}
-
-void IOROS::cmdvelCallback(const geometry_msgs::Twist &msg)
-{
-    cmd_body << msg.linear.x, msg.linear.y, 0.0;
-    Highcmd.omega_cmd[2] = msg.angular.z;
-    msg_received = true;
-}
-
-void IOROS::poseCallback(const geometry_msgs::Pose &msg)
-{
-    msg_received = true;
-
-    Eigen::Vector3d pose_world = (Eigen::Vector3d() << _lowState.position.x, _lowState.position.y, 0).finished();
-    Eigen::Vector3d contact_point_world = (Eigen::Vector3d() << msg.position.x, msg.position.y, 0).finished();
-    Eigen::Vector3d distance_body = rotmat.transpose() * (contact_point_world - pose_world);
-
-    Highcmd.velocity_cmd[0] = 2 * (distance_body[0] - _quad.leg_offset_x);  
-    Highcmd.velocity_cmd[1] = cmd_body[1] + 3 * (distance_body[1]); // magic number
-    //   ROS_INFO("I heard: x =%f, y=%f, z=%f", Highcmd.velocity_cmd[0], Highcmd.velocity_cmd[1], Highcmd.omega_cmd[2]);
-}
-
-void IOROS::timerCallback(const ros::TimerEvent &)
-{
-    if (msg_received)
-    {
-        msg_received = false;
-        planner_running = true;
-    }
-    else
-    {
-        planner_running = false;
-    }
 }

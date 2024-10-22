@@ -23,6 +23,8 @@ void FSMState_Manipulation::run()
 {
     _data->_legController->updateData(_data->_lowState);
     _data->_stateEstimator->run();
+    _data->_manipulationIO->run(_data->_lowState);
+
     _userValue = _data->_lowState->userValue;
     // adjusthte velocity range based on the gait cycle time
     // v_des_body[0] = (double)invNormalize(_userValue.ly, -3.0, 3.0); // change this velocity limit for different robots
@@ -43,6 +45,7 @@ void FSMState_Manipulation::exit()
 {
     counter = 0;
     _data->_interface->cmdPanel->setCmdNone();
+    _data->_interface->cmdPanel->setZero();
 }
 
 FSMStateName FSMState_Manipulation::checkTransition()

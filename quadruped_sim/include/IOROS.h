@@ -27,21 +27,18 @@ class IOROS : public IOInterface
         void sendCmd(const LowlevelCmd *cmd);
         void recvState(LowlevelState *state);
         ros::NodeHandle _nm;
-        ros::Subscriber _servo_sub[12], _imu_sub, _state_sub, _foot_force_sub[4], _manipulation_force_sub, _object_sub[2];
+        ros::Subscriber _servo_sub[12], _imu_sub, _state_sub, _foot_force_sub[4];
         ros::Publisher _servo_pub[12], _pose_pub;
         unitree_legged_msgs::LowCmd _lowCmd;
         unitree_legged_msgs::LowState _lowState;
         std::string _robot_name;
         float _camera_link_length;
-        HighlevelCmd Highcmd;
         Quadruped _quad;
         
         ros::Time _currentTime;
         std::string tf_prefix;
         geometry_msgs::TransformStamped _trunkTF;
         tf::TransformBroadcaster _trunkTF_broadcaster;
-        Eigen::Matrix3d rotmat;
-        Eigen::Vector3d cmd_body;
 
         geometry_msgs::PoseWithCovarianceStamped _poseMsg;
 
@@ -72,14 +69,6 @@ class IOROS : public IOInterface
         void FLfootCallback(const geometry_msgs::WrenchStamped& msg);
         void RRfootCallback(const geometry_msgs::WrenchStamped& msg);
         void RLfootCallback(const geometry_msgs::WrenchStamped& msg);
-
-        void ManiForceCallback(const geometry_msgs::Wrench& msg);
-        void cmdvelCallback(const geometry_msgs::Twist& msg);
-        void poseCallback(const geometry_msgs::Pose& msg);
-        void timerCallback(const ros::TimerEvent&); 
-        bool msg_received =false;
-        bool planner_running = false;
-        ros::Timer timer;
 
         boost::array<double, 36> _odom_pose_covariance = {1e-9, 0, 0, 0, 0, 0, 
                                         0, 1e-3, 1e-9, 0, 0, 0, 
