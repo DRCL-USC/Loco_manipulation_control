@@ -4,7 +4,7 @@ This package implements an MPC-based controller for locomotion and [loco-manipul
 # Installation
 ## Prerequisites
 
-The library is written in C++11 and it is tested under Ubuntu 20.04 with library versions as 
+The library is written in C++11, and it is tested under Ubuntu 20.04 with library versions as 
 provided in the package sources.
 
 ## Dependencies
@@ -40,7 +40,7 @@ Clone the code:
 # Navigate to the directory of src
 # Do not forget to change <...> parts
 cd <directory_to_ws>/<catkin_ws_name>/src
-git clone --recurse-submodules 
+git clone --recurse-submodules https://github.com/DRCL-USC/Loco_manipulation_control.git
 ```
 Build simulation package:
 ```
