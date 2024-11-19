@@ -28,16 +28,31 @@ void setProcessScheduler()
     param.sched_priority = sched_get_priority_max(SCHED_FIFO);
     if (sched_setscheduler(pid, SCHED_FIFO, &param) == -1)
     {
-        std::cout << "[ERROR] function setprocessscheduler failed \n ";
+        std::cout << "[ERROR] function set process scheduler failed \n ";
     }
 }
 
-int main()
+int main(int argc, char **argv)
 {
     setProcessScheduler();
 
     double dt = 0.001;
-    int cmd_panel_id = 1; // Wireless=1, keyboard=2
+    int cmd_panel_id; // Wireless=1, keyboard=2
+    
+    if (argc > 1) {
+        if(std::string(argv[1]) == "wireless") {
+            cmd_panel_id = 1;
+        } else if(std::string(argv[1]) == "keyboard") {
+            cmd_panel_id = 2;
+        } else {
+            std::cout << "Invalid command panel. Please enter either 'wireless' or 'keyboard'." << std::endl;
+            return 1;
+        }
+    }
+    else {
+        cmd_panel_id = 2; // Default to keyboard
+    }
+
     IOInterface *ioInter;
     ManipulationUDP *manipulationIO;
 

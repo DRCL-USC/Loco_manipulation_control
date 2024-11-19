@@ -6,7 +6,7 @@ windows:
       - shell_command:
         - roslaunch quadruped_sim world_only.launch
     shell_command_before:
-      - source ~/Projects/manipulation_ws/devel/setup.bash 
+      - source $PWD/../../../../devel/setup.bash 
 
   - window_name: Robot1
     layout: tiled
@@ -18,7 +18,7 @@ windows:
         - sleep 6
         - rosrun quadruped_sim quad_sim_control $robot_type __ns:=$ns
     shell_command_before:
-      - source ~/Projects/manipulation_ws/devel/setup.bash 
+      - source $PWD/../../../../devel/setup.bash 
       - export ns=robot_1
       - export robot_type=a1
       - export x_pos=0.0
@@ -35,7 +35,7 @@ windows:
         - sleep 6
         - rosrun quadruped_sim quad_sim_control $robot_type __ns:=$ns
     shell_command_before:
-      - source ~/Projects/manipulation_ws/devel/setup.bash 
+      - source $PWD/../../../../devel/setup.bash 
       - export ns=robot_2
       - export robot_type=aliengo
       - export x_pos=0.0
